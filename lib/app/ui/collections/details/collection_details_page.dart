@@ -99,8 +99,9 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                 slivers: [
                   SliverAppBar(
                     centerTitle: true,
-                    title:  Container(
-                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+                    title: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
                       decoration: BoxDecoration(
                         color: Colors.black87,
                         borderRadius: BorderRadius.circular(24),
@@ -123,8 +124,7 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                             width: 36,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.circular(36),
+                              borderRadius: BorderRadius.circular(36),
                               border: Border.all(color: Colors.black, width: 1),
                             ),
                             child: Icon(Icons.arrow_back),
@@ -195,7 +195,7 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                       ),
                     ],
                   ),
-                  if (tasks.isNotEmpty)
+                  if (viewModel.hasTasks)
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 12.0),
@@ -217,7 +217,12 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                             onTap: () => goToDetailsTask(task.id),
                             title: task.title,
                             value: task.value,
-                            onChanged: (_) {},
+                            onChanged: (value) =>
+                                viewModel.checkedCommand.execute((
+                              task: task,
+                              value: value!,
+                              collectionId: collection.id,
+                            )),
                           ),
                         );
                       },

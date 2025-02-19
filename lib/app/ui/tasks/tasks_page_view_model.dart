@@ -21,11 +21,13 @@ class TasksPageViewModel extends ChangeNotifier {
     taskRepository.observerTasks().listen(_updateScreen);
   }
 
+  bool _hasFilter = false;
+
   List<TaskEntity> _tasks = [];
 
   List<TaskEntity> _filteredTasks = const [];
 
-  List<TaskEntity> get tasks => _filteredTasks.isNotEmpty //
+  List<TaskEntity> get tasks => _hasFilter //
       ? _filteredTasks
       : _tasks;
 
@@ -46,16 +48,19 @@ class TasksPageViewModel extends ChangeNotifier {
   }
 
   onAll() {
+    _hasFilter = false;
     _filteredTasks = [];
     notifyListeners();
   }
 
   onDo() {
+    _hasFilter = true;
     _filteredTasks = _tasks.where((data) => data.value == false).toList();
     notifyListeners();
   }
 
   onCompleted() {
+    _hasFilter = true;
     _filteredTasks = _tasks.where((data) => data.value == true).toList();
     notifyListeners();
   }

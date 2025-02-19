@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:modular_di_app/app/modules/task/data/repositories/task_repository.dart';
-import 'package:modular_di_app/app/modules/task/domain/entities/task_entity.dart';
 import 'package:result_dart/result_dart.dart';
 
+import '../../../modules/task/data/repositories/task_repository.dart';
+import '../../../modules/task/domain/dtos/task_dto.dart';
+import '../../../modules/task/domain/entities/task_entity.dart';
 import '../../../modules/collection/data/repositories/collection_repository.dart';
 import '../../../modules/collection/domain/entities/collection_entity.dart';
 import '../../../utils/command.dart';
+
+typedef CheckedParams = ({
+  int collectionId,
+  TaskEntity task,
+  bool value,
+});
+
+enum TypeFilter { all, doValue, completed }
 
 class CollectionDetailsPageViewModel extends ChangeNotifier {
   final ICollectionRepository collectionRepository;
@@ -14,21 +23,28 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
   CollectionDetailsPageViewModel(
       this.collectionRepository, this.taskRepository) {
     getCollectionCommand = Command1(_getCollection);
+    checkedCommand = Command1(_onChecked);
   }
 
   CollectionEntity _collection = CollectionEntity.empty();
 
   CollectionEntity get collection => _collection;
 
+  TypeFilter _filter = TypeFilter.all;
+
   List<TaskEntity> _tasks = [];
 
   List<TaskEntity> _filteredTasks = const [];
 
-  List<TaskEntity> get tasks => _filteredTasks.isNotEmpty //
+  List<TaskEntity> get tasks => _filter != TypeFilter.all //
       ? _filteredTasks
       : _tasks;
 
+  bool get hasTasks => _tasks.isNotEmpty;
+
   late final Command1<CollectionEntity, int> getCollectionCommand;
+
+  late final Command1<Unit, CheckedParams> checkedCommand;
 
   AsyncResult<CollectionEntity> _getCollection(int collectionId) async {
     final [
@@ -61,20 +77,42 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
     return Success(collection);
   }
 
+  AsyncResult<Unit> _onChecked(CheckedParams params) {
+    final dto = TaskDto(
+      id: params.task.id,
+      title: params.task.title,
+      value: params.value,
+    );
+    return taskRepository
+        .updateTask(dto)
+        .flatMap((_) => _getCollection(params.collectionId))
+        .onSuccess(_checkFilter)
+        .pure(unit);
+  }
+
   onAll() {
+    _filter = TypeFilter.all;
     _filteredTasks = [];
     notifyListeners();
   }
 
   onDo() {
+    _filter = TypeFilter.doValue;
     _filteredTasks = _tasks.where((data) => data.value == false).toList();
     notifyListeners();
   }
 
   onCompleted() {
+    _filter = TypeFilter.completed;
     _filteredTasks = _tasks.where((data) => data.value == true).toList();
     notifyListeners();
   }
+
+  _checkFilter([_]) => switch (_filter) {
+    TypeFilter.doValue => onDo(),
+    TypeFilter.completed => onCompleted(),
+    _ => null,
+  };
 
   _updateCollectionOnScreen(CollectionEntity collection) {
     _collection = collection;
