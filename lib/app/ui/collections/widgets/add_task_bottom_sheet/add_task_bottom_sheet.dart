@@ -118,6 +118,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       return TileItem.preview(
                         onTap: () => onSelect(task),
                         title: task.title,
+                        value: task.value,
                       );
                     },
                   ),

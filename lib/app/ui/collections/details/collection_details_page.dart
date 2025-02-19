@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:modular_di_app/app/ui/shared/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../modules/task/data/repositories/task_repository.dart';
@@ -68,7 +69,7 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                 color: Colors.white,
                 border: Border(top: BorderSide(width: 1, color: Colors.black)),
               ),
-              child: ElevatedButton(
+              child: PrimaryButton(
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
@@ -98,7 +99,20 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                 slivers: [
                   SliverAppBar(
                     centerTitle: true,
-                    title: Text('Details Collection'),
+                    title:  Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+                      decoration: BoxDecoration(
+                        color: Colors.black87,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Text(
+                        'Details Collection',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                     leading: Padding(
                       padding: const EdgeInsets.only(left: 12),
                       child: Center(

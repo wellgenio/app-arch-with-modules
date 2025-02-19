@@ -6,6 +6,7 @@ import '../../modules/collection/data/repositories/collection_repository.dart';
 import '../../modules/task/data/repositories/task_repository.dart';
 import '../../modules/task/domain/dtos/task_dto.dart';
 import '../shared/widgets/filter_tabs.dart';
+import '../shared/widgets/primary_button.dart';
 import '../tasks/tasks_page_view_model.dart';
 import '../tasks/widgets/add_collection_bottom_sheet/add_collection_bottom_sheet.dart';
 import '../tasks/widgets/add_collection_bottom_sheet/add_collection_bottom_sheet_view_model.dart';
@@ -52,7 +53,7 @@ class _TasksPageState extends State<TasksPage> {
           color: Colors.white,
           border: Border(top: BorderSide(width: 1, color: Colors.black)),
         ),
-        child: ElevatedButton(
+        child: PrimaryButton(
           onPressed: () {
             showModalBottomSheet(
               context: context,

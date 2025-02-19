@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../modules/collection/domain/entities/collection_entity.dart';
+import '../../../shared/widgets/primary_button.dart';
 import 'delete_collection_bottom_sheet_view_model.dart';
 
 class DeleteCollectionBottomSheet extends StatefulWidget {
@@ -95,7 +96,7 @@ class _DeleteCollectionBottomSheetState
           SizedBox(
             width: double.infinity,
             height: 50,
-            child: ElevatedButton(
+            child: PrimaryButton(
               onPressed: onConfirm,
               child: Text('Confirmar'),
             ),

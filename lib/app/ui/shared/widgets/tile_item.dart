@@ -14,12 +14,14 @@ class TileItem extends StatelessWidget {
     required VoidCallback onTap,
     required String title,
     List<MenuItemButton>? menuChildren,
+    bool? value,
   }) =>
       TileItem._(
         onTap: onTap,
         title: title,
         menuChildren: menuChildren,
         verifiable: false,
+        value: value,
       );
 
   factory TileItem.verifiable({
@@ -88,6 +90,12 @@ class TileItem extends StatelessWidget {
                 );
               },
             ),
+          if (verifiable == false && value == true)
+            Container(
+              color: Colors.black87,
+              margin: EdgeInsets.only(right: 24),
+              child: Icon(Icons.check, color: Colors.white),
+            )
         ]),
       ),
     );

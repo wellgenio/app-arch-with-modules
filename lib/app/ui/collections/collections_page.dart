@@ -5,6 +5,7 @@ import '../../modules/collection/data/repositories/collection_repository.dart';
 import '../collections/collections_page_view_model.dart';
 import '../collections/widgets/form_collection_bottom_sheet/form_collection_bottom_sheet_view_model.dart';
 import '../../app_widget.dart';
+import '../shared/widgets/primary_button.dart';
 import '../shared/widgets/tile_item.dart';
 
 import 'widgets/form_collection_bottom_sheet/form_collection_bottom_sheet.dart';
@@ -43,7 +44,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
           color: Colors.white,
           border: Border(top: BorderSide(width: 1, color: Colors.black)),
         ),
-        child: ElevatedButton(
+        child: PrimaryButton(
           onPressed: () {
             showModalBottomSheet(
               context: context,

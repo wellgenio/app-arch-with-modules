@@ -24,7 +24,7 @@ class _AppWidgetState extends State<AppWidget> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Modular App',
+      title: 'Complex TODO',
       debugShowCheckedModeBanner: false,
       initialRoute: RoutePaths.home.path,
       routes: AppRouter.returnRouter(true),

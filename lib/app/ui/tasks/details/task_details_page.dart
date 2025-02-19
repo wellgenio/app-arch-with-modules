@@ -52,7 +52,20 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
               slivers: [
                 SliverAppBar(
                   centerTitle: true,
-                  title: Text('Details Task'),
+                  title: Container(
+                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Text(
+                      'Details Task',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                   leading: Padding(
                     padding: const EdgeInsets.only(left: 12),
                     child: Center(

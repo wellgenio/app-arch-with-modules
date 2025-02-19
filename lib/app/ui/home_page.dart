@@ -41,7 +41,29 @@ class _HomePageState extends State<HomePage> {
         slivers: [
           SliverAppBar(
             backgroundColor: Colors.white,
-            title: Text('Modular App'),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 12.0,
+              children: [
+                Text('Complex'),
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Text(
+                    'TODO',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             centerTitle: true,
           ),
           SliverPersistentHeader(

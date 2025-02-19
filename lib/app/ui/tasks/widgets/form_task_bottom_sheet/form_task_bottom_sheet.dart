@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../modules/task/domain/dtos/task_dto.dart';
 import '../../../../modules/task/domain/entities/task_entity.dart';
 
+import '../../../shared/widgets/primary_button.dart';
 import 'form_task_bottom_sheet_view_model.dart';
 
 class FormTaskBottomSheet extends StatefulWidget {
@@ -162,7 +163,7 @@ class _FormTaskBottomSheetState extends State<FormTaskBottomSheet> {
               SizedBox(
                 width: double.infinity,
                 height: 50,
-                child: ElevatedButton(
+                child: PrimaryButton(
                   onPressed: () => onSubmit(dto),
                   child: Text(widget.editable ? 'Edit' : 'Add'),
                 ),
