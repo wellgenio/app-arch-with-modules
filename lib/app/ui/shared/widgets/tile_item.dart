@@ -63,12 +63,9 @@ class TileItem extends StatelessWidget {
         ),
         margin: EdgeInsets.symmetric(vertical: 12.0),
         child: Row(mainAxisSize: MainAxisSize.max, children: [
-          Container(
-            margin: EdgeInsets.all(8.0),
-            width: 70,
-            child: const Placeholder(),
-          ),
+          if (verifiable) Checkbox(value: value, onChanged: onChanged),
           SizedBox(width: 12.0),
+          if (!verifiable) SizedBox(width: 12.0),
           Expanded(
             child: Text(
               title,
@@ -78,7 +75,6 @@ class TileItem extends StatelessWidget {
               ),
             ),
           ),
-          if (verifiable) Checkbox(value: value, onChanged: onChanged),
           if (menuChildren != null)
             MenuAnchor(
               style: MenuStyle(
