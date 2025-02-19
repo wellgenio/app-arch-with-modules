@@ -82,8 +82,12 @@ class TaskRepository implements ITaskRepository {
 
   @override
   AsyncResult<Unit> updateTask(TaskDto dto) async {
-    _cachedTasks?.removeWhere((data) => data.id == dto.id);
-    _cachedTasks?.add(TaskEntity(id: dto.id!, title: dto.title, value: dto.value));
+    _cachedTasks = _cachedTasks?.map((data) {
+      if (data.id == dto.id) {
+        return TaskEntity(id: dto.id!, title: dto.title, value: dto.value);
+      }
+      return data;
+    }).toList();
     return Success(unit);
   }
 

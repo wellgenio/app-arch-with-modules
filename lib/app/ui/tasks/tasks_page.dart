@@ -101,7 +101,8 @@ class _TasksPageState extends State<TasksPage> {
                         onTap: () => goToDetails(task.id),
                         title: task.title,
                         value: task.value,
-                        onChanged: (_) {},
+                        onChanged: (value) => viewModel.checkedCommand
+                            .execute((value: value ?? false, task: task)),
                         menuChildren: [
                           MenuItemButton(
                             child: Text('Adicionar na coleção'),

@@ -94,6 +94,13 @@ class CollectionRepository implements ICollectionRepository {
       title: dto.title,
       tasks: dto.tasks,
     ));
+
+    _cachedCollections = _cachedCollections?.map((data) {
+      if (data.id == dto.id) {
+        return CollectionEntity(id: dto.id, title: dto.title, tasks: dto.tasks);
+      }
+      return data;
+    }).toList();
     return Success(unit);
   }
 
@@ -111,7 +118,7 @@ class CollectionRepository implements ICollectionRepository {
   }
 
   @override
-  AsyncResult<Unit> addTask(int collectionId,  int taskId) async {
+  AsyncResult<Unit> addTask(int collectionId, int taskId) async {
     _cachedCollections = _cachedCollections?.map((data) {
       if (data.id == collectionId) {
         return CollectionEntity(
