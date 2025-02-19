@@ -171,6 +171,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                           flex: 2,
                           child: Text(
                             task.title,
+                            textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 24),
                           ),
                         ),

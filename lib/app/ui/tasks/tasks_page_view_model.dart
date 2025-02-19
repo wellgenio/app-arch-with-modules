@@ -16,7 +16,11 @@ class TasksPageViewModel extends ChangeNotifier {
 
   List<TaskEntity> _tasks = [];
 
-  List<TaskEntity> get tasks => _tasks;
+  List<TaskEntity> _filteredTasks = const [];
+
+  List<TaskEntity> get tasks => _filteredTasks.isNotEmpty //
+      ? _filteredTasks
+      : _tasks;
 
   late final Command0<List<TaskEntity>> getTasksCommand;
 
@@ -25,6 +29,21 @@ class TasksPageViewModel extends ChangeNotifier {
 
   updateScreen(List<TaskEntity> value) {
     _tasks = value;
+    notifyListeners();
+  }
+
+  onAll() {
+    _filteredTasks = [];
+    notifyListeners();
+  }
+
+  onDo() {
+    _filteredTasks = _tasks.where((data) => data.value == false).toList();
+    notifyListeners();
+  }
+
+  onCompleted() {
+    _filteredTasks = _tasks.where((data) => data.value == true).toList();
     notifyListeners();
   }
 }

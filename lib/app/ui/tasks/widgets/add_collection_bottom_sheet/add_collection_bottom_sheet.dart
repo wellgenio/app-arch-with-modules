@@ -114,7 +114,7 @@ class _AddCollectionBottomSheetState extends State<AddCollectionBottomSheet> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       final collection = viewModel.collections[index];
-                      return TileItem(
+                      return TileItem.preview(
                         onTap: () => onSelect(collection.id),
                         title: collection.title,
                       );

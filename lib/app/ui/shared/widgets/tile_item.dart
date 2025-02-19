@@ -1,10 +1,50 @@
 import 'package:flutter/material.dart';
 
 class TileItem extends StatelessWidget {
-  const TileItem(
-      {super.key, required this.onTap, required this.title, this.menuChildren});
+  const TileItem._({
+    required this.onTap,
+    required this.title,
+    this.onChanged,
+    this.value,
+    this.menuChildren,
+    required this.verifiable,
+  });
+
+  factory TileItem.preview({
+    required VoidCallback onTap,
+    required String title,
+    List<MenuItemButton>? menuChildren,
+  }) =>
+      TileItem._(
+        onTap: onTap,
+        title: title,
+        menuChildren: menuChildren,
+        verifiable: false,
+      );
+
+  factory TileItem.verifiable({
+    required VoidCallback onTap,
+    required String title,
+    List<MenuItemButton>? menuChildren,
+    required ValueChanged<bool?> onChanged,
+    required bool value,
+  }) =>
+      TileItem._(
+        onChanged: onChanged,
+        value: value,
+        onTap: onTap,
+        title: title,
+        menuChildren: menuChildren,
+        verifiable: true,
+      );
+
+  final bool verifiable;
 
   final VoidCallback onTap;
+
+  final ValueChanged<bool?>? onChanged;
+
+  final bool? value;
 
   final List<MenuItemButton>? menuChildren;
 
@@ -29,8 +69,16 @@ class TileItem extends StatelessWidget {
             child: const Placeholder(),
           ),
           SizedBox(width: 12.0),
-          Text(title, style: TextStyle(fontSize: 20)),
-          Spacer(),
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+          if (verifiable) Checkbox(value: value, onChanged: onChanged),
           if (menuChildren != null)
             MenuAnchor(
               style: MenuStyle(

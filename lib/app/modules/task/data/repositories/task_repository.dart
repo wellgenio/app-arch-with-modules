@@ -39,8 +39,8 @@ class TaskRepository implements ITaskRepository {
         isErrorEnabled = true;
 
   List<TaskEntity>? _cachedTasks = [
-    TaskEntity(id: 1, title: 'Teste 1'),
-    TaskEntity(id: 2, title: 'Teste 2'),
+    TaskEntity(id: 1, title: 'Teste 1', value: false),
+    TaskEntity(id: 2, title: 'Teste 2', value: true),
   ];
 
   late final StreamController<List<TaskEntity>> _streamCtrl =
@@ -70,7 +70,7 @@ class TaskRepository implements ITaskRepository {
 
   @override
   AsyncResult<Unit> addTask(TaskDto dto) async {
-    _cachedTasks?.add(TaskEntity(id: currentId++, title: dto.title));
+    _cachedTasks?.add(TaskEntity(id: currentId++, title: dto.title, value: dto.value));
     return Success(unit);
   }
 
@@ -83,7 +83,7 @@ class TaskRepository implements ITaskRepository {
   @override
   AsyncResult<Unit> updateTask(TaskDto dto) async {
     _cachedTasks?.removeWhere((data) => data.id == dto.id);
-    _cachedTasks?.add(TaskEntity(id: dto.id!, title: dto.title));
+    _cachedTasks?.add(TaskEntity(id: dto.id!, title: dto.title, value: dto.value));
     return Success(unit);
   }
 

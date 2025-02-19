@@ -6,6 +6,7 @@ import '../../../modules/collection/data/repositories/collection_repository.dart
 import '../../collections/widgets/add_task_bottom_sheet/add_task_bottom_sheet_view_model.dart';
 import '../../collections/widgets/delete_collection_bottom_sheet/delete_collection_bottom_sheet_view_model.dart';
 import '../../../app_widget.dart';
+import '../../shared/widgets/filter_tabs.dart';
 import '../../shared/widgets/tile_item.dart';
 import '../widgets/add_task_bottom_sheet/add_task_bottom_sheet.dart';
 import '../widgets/delete_collection_bottom_sheet/delete_collection_bottom_sheet.dart';
@@ -180,6 +181,17 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                       ),
                     ],
                   ),
+                  if (tasks.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: FilterTabs(
+                          onAll: viewModel.onAll,
+                          onDo: viewModel.onDo,
+                          onCompleted: viewModel.onCompleted,
+                        ),
+                      ),
+                    ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       childCount: tasks.length,
@@ -187,9 +199,11 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                         final task = tasks[index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: TileItem(
+                          child: TileItem.verifiable(
                             onTap: () => goToDetailsTask(task.id),
                             title: task.title,
+                            value: task.value,
+                            onChanged: (_) {},
                           ),
                         );
                       },

@@ -115,8 +115,10 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       final task = viewModel.tasks[index];
-                      return TileItem(
-                          onTap: () => onSelect(task), title: task.title);
+                      return TileItem.preview(
+                        onTap: () => onSelect(task),
+                        title: task.title,
+                      );
                     },
                   ),
                 ),

@@ -75,7 +75,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
                         (context, index) {
                       final collection = viewModel.collections[index];
 
-                      return TileItem(
+                      return TileItem.preview(
                         onTap: () => goToDetails(collection.id),
                         title: collection.title,
                       );

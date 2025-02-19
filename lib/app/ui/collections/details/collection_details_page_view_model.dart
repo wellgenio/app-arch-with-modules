@@ -20,9 +20,13 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
 
   CollectionEntity get collection => _collection;
 
-  List<TaskEntity> _tasks = const [];
+  List<TaskEntity> _tasks = [];
 
-  List<TaskEntity> get tasks => _tasks;
+  List<TaskEntity> _filteredTasks = const [];
+
+  List<TaskEntity> get tasks => _filteredTasks.isNotEmpty //
+      ? _filteredTasks
+      : _tasks;
 
   late final Command1<CollectionEntity, int> getCollectionCommand;
 
@@ -52,15 +56,30 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
 
     _tasks = tasks.where((data) => collection.tasks.contains(data.id)).toList();
 
-    updateCollectionOnScreen(collection);
-    updateListTaskOnScreen();
+    _updateCollectionOnScreen(collection);
+    _updateListTaskOnScreen();
     return Success(collection);
   }
 
-  updateCollectionOnScreen(CollectionEntity collection) {
+  onAll() {
+    _filteredTasks = [];
+    notifyListeners();
+  }
+
+  onDo() {
+    _filteredTasks = _tasks.where((data) => data.value == false).toList();
+    notifyListeners();
+  }
+
+  onCompleted() {
+    _filteredTasks = _tasks.where((data) => data.value == true).toList();
+    notifyListeners();
+  }
+
+  _updateCollectionOnScreen(CollectionEntity collection) {
     _collection = collection;
     notifyListeners();
   }
 
-  updateListTaskOnScreen([_]) => collectionRepository.getCollections();
+  _updateListTaskOnScreen([_]) => collectionRepository.getCollections();
 }

@@ -5,6 +5,7 @@ import '../../app_widget.dart';
 import '../../modules/collection/data/repositories/collection_repository.dart';
 import '../../modules/task/data/repositories/task_repository.dart';
 import '../../modules/task/domain/dtos/task_dto.dart';
+import '../shared/widgets/filter_tabs.dart';
 import '../tasks/tasks_page_view_model.dart';
 import '../tasks/widgets/add_collection_bottom_sheet/add_collection_bottom_sheet.dart';
 import '../tasks/widgets/add_collection_bottom_sheet/add_collection_bottom_sheet_view_model.dart';
@@ -81,13 +82,25 @@ class _TasksPageState extends State<TasksPage> {
             builder: (context, _) {
               return CustomScrollView(
                 slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: FilterTabs(
+                        onAll: viewModel.onAll,
+                        onDo: viewModel.onDo,
+                        onCompleted: viewModel.onCompleted,
+                      ),
+                    ),
+                  ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                         childCount: viewModel.tasks.length, (context, index) {
                       final task = viewModel.tasks[index];
-                      return TileItem(
+                      return TileItem.verifiable(
                         onTap: () => goToDetails(task.id),
                         title: task.title,
+                        value: task.value,
+                        onChanged: (_) {},
                         menuChildren: [
                           MenuItemButton(
                             child: Text('Adicionar na coleção'),
