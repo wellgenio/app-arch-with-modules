@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:modular_di_app/app/modules/auth/data/repositories/auth_repository.dart';
+import 'package:modular_di_app/app/ui/auth/logout/logout_button.dart';
+import 'package:modular_di_app/app/ui/auth/logout/logout_button_view_model.dart';
+import 'package:provider/provider.dart';
 
 import 'collections/collections_page.dart';
 import 'tasks/tasks_page.dart';
@@ -41,29 +45,53 @@ class _HomePageState extends State<HomePage> {
         slivers: [
           SliverAppBar(
             backgroundColor: Colors.white,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 12.0,
-              children: [
-                Text('Complex'),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                  decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Text(
-                    'TODO',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+            title: Padding(
+              padding: const EdgeInsets.only(left: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 12.0,
+                children: [
+                  Text('Complex'),
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Text(
+                      'TODO',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+            actions: [
+              MenuAnchor(
+                style: MenuStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.white),
+                ),
+                menuChildren: [
+                  ChangeNotifierProvider(
+                    create: (_) => LogoutButtonViewModel(
+                      context.read<IAuthRepository>(),
+                    ),
+                    child: LogoutButton(),
+                  ),
+                ],
+                builder: (context, controller, __) {
+                  return IconButton(
+                    icon: Icon(Icons.more_vert, color: Colors.black),
+                    onPressed: controller.open,
+                  );
+                },
+              ),
+            ],
             centerTitle: true,
           ),
           SliverPersistentHeader(
