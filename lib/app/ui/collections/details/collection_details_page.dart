@@ -119,12 +119,12 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                         child: GestureDetector(
                           onTap: Navigator.of(context).pop,
                           child: Container(
-                            height: 42,
-                            width: 42,
+                            height: 36,
+                            width: 36,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
+                                  BorderRadius.circular(36),
                               border: Border.all(color: Colors.black, width: 1),
                             ),
                             child: Icon(Icons.arrow_back),
