@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:modular_di_app/app/app_widget.dart';
 import 'package:modular_di_app/app/modules/auth/domain/dtos/credentials_dto.dart';
 import 'package:modular_di_app/app/ui/auth/login/login_page_view_model.dart';
 import 'package:modular_di_app/app/ui/shared/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../main.dart';
+import '../../../routing/router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

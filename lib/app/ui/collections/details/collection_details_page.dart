@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../../../modules/task/data/repositories/task_repository.dart';
 import '../../../modules/collection/data/repositories/collection_repository.dart';
+import '../../../routing/router.dart';
 import '../../collections/widgets/add_task_bottom_sheet/add_task_bottom_sheet_view_model.dart';
 import '../../collections/widgets/delete_collection_bottom_sheet/delete_collection_bottom_sheet_view_model.dart';
-import '../../../app_widget.dart';
 import '../../shared/widgets/filter_tabs.dart';
 import '../../shared/widgets/tile_item.dart';
 import '../widgets/add_task_bottom_sheet/add_task_bottom_sheet.dart';

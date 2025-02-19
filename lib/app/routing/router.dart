@@ -1,4 +1,20 @@
-part of 'app_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../modules/auth/data/repositories/auth_repository.dart';
+import '../modules/collection/data/repositories/collection_repository.dart';
+import '../modules/task/data/repositories/task_repository.dart';
+import '../ui/auth/login/login_page.dart';
+import '../ui/auth/login/login_page_view_model.dart';
+import '../ui/collections/collections_page_view_model.dart';
+import '../ui/collections/details/collection_details_page.dart';
+import '../ui/collections/details/collection_details_page_view_model.dart';
+import '../ui/home_page.dart';
+import '../ui/tasks/details/task_details_page.dart';
+import '../ui/tasks/details/task_details_page_view_model.dart';
+import '../ui/tasks/tasks_page_view_model.dart';
+
+part 'routes.dart';
 
 typedef Routes = Map<String, Widget Function(BuildContext)>;
 
@@ -7,28 +23,6 @@ class RoutePath {
   final String name;
 
   const RoutePath({required this.path, required this.name});
-}
-
-class RoutePaths {
-  static const RoutePath login = RoutePath(
-    name: 'login',
-    path: '/login',
-  );
-
-  static const RoutePath home = RoutePath(
-    name: 'home',
-    path: '/home',
-  );
-
-  static const RoutePath collectionDetails = RoutePath(
-    name: 'collection',
-    path: '/collection',
-  );
-
-  static const RoutePath taskDetails = RoutePath(
-    name: 'task',
-    path: '/task',
-  );
 }
 
 class AppRouter {
@@ -84,23 +78,4 @@ class AppRouter {
               child: LoginPage(),
             ),
       };
-}
-
-class AuthObserver extends RouteObserver<ModalRoute<dynamic>> {
-  final GlobalKey<NavigatorState> navigatorKey;
-  final BuildContext context;
-
-  AuthObserver(
-    this.context, {
-    required this.navigatorKey,
-  });
-
-  @override
-  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    context.read<IAuthRepository>().observerUser().listen((user) {
-      if (user is NotLoggedUserEntity) {
-        navigatorKey.currentState?.pushReplacementNamed(RoutePaths.login.path);
-      }
-    });
-  }
 }

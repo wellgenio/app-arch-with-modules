@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../app_widget.dart';
 import '../../modules/collection/data/repositories/collection_repository.dart';
 import '../../modules/task/data/repositories/task_repository.dart';
 import '../../modules/task/domain/dtos/task_dto.dart';
+import '../../routing/router.dart';
 import '../shared/widgets/filter_tabs.dart';
 import '../shared/widgets/primary_button.dart';
 import '../tasks/tasks_page_view_model.dart';

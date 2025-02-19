@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../modules/collection/data/repositories/collection_repository.dart';
+import '../../routing/router.dart';
 import '../collections/collections_page_view_model.dart';
 import '../collections/widgets/form_collection_bottom_sheet/form_collection_bottom_sheet_view_model.dart';
-import '../../app_widget.dart';
 import '../shared/widgets/primary_button.dart';
 import '../shared/widgets/tile_item.dart';
 
