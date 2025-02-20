@@ -1,5 +1,5 @@
 class TaskDto {
-  int? id;
+  String? id;
   String title;
   bool value;
 
@@ -10,4 +10,10 @@ class TaskDto {
   setTitle(String value) => title = value;
 
   setValue(bool newValue) => value = newValue;
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'value': value
+  };
 }

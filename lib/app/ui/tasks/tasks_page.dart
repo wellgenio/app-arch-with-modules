@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../modules/collection/data/repositories/collection_repository.dart';
+import '../../modules/core/event_bus/event_bus.dart';
 import '../../modules/task/data/repositories/task_repository.dart';
 import '../../modules/task/domain/dtos/task_dto.dart';
 import '../../routing/router.dart';
@@ -36,7 +37,7 @@ class _TasksPageState extends State<TasksPage> {
     viewModel.getTasksCommand.execute();
   }
 
-  void goToDetails([int taskId = 1]) => //
+  void goToDetails([String taskId = '1']) => //
       Navigator.of(context).pushNamed(
         RoutePaths.taskDetails.path,
         arguments: taskId,
@@ -62,9 +63,9 @@ class _TasksPageState extends State<TasksPage> {
                 return ChangeNotifierProvider(
                   create: (_) => FormTaskBottomSheetViewModel(
                     context.read<ITaskRepository>(),
+                    context.read<EventBus>(),
                   ),
                   child: FormTaskBottomSheet.create(
-                    onSuccess: viewModel.getTasksCommand.execute,
                   ),
                 );
               },
@@ -136,11 +137,10 @@ class _TasksPageState extends State<TasksPage> {
                                   return ChangeNotifierProvider(
                                     create: (_) => FormTaskBottomSheetViewModel(
                                       context.read<ITaskRepository>(),
+                                      context.read<EventBus>(),
                                     ),
                                     child: FormTaskBottomSheet.editable(
                                       task: task,
-                                      onSuccess:
-                                          viewModel.getTasksCommand.execute,
                                     ),
                                   );
                                 },

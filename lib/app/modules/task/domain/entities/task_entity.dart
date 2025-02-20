@@ -1,5 +1,5 @@
 class TaskEntity {
-  final int id;
+  final String id;
   final String title;
   final bool value;
 
@@ -9,5 +9,5 @@ class TaskEntity {
     required this.value,
   });
 
-  factory TaskEntity.empty() => TaskEntity(id: -1, title: '', value: false);
+  factory TaskEntity.empty() => TaskEntity(id: '-1', title: '', value: false);
 }

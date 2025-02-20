@@ -27,7 +27,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
     viewModel.getCollectionsCommand.execute();
   }
 
-  void goToDetails([int collectionId = 1]) => //
+  void goToDetails([String collectionId = '1']) => //
       Navigator.of(context).pushNamed(
         RoutePaths.collectionDetails.path,
         arguments: collectionId,
@@ -54,7 +54,9 @@ class _CollectionsPageState extends State<CollectionsPage> {
                   create: (_) => FormCollectionBottomSheetViewModel(
                       context.read<ICollectionRepository>()),
                   child: FormCollectionBottomSheet.create(
-                    onSuccess: viewModel.getCollectionsCommand.execute,
+                    onSuccess: () {
+                      print("TEST");
+                    },
                   ),
                 );
               },

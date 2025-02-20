@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../modules/collection/domain/entities/collection_entity.dart';
 import '../../../../modules/task/domain/entities/task_entity.dart';
 import '../../../../utils/functions.dart';
 import '../../../shared/widgets/tile_item.dart';
@@ -68,9 +69,9 @@ class _AddCollectionBottomSheetState extends State<AddCollectionBottomSheet> {
 
   void search(String term) => deboucer.run(() => viewModel.search(term));
 
-  void onSelect(int collectionId) => //
+  void onSelect(CollectionEntity collection) => //
       viewModel.addTaskOnCollectionCommand.execute((
-        collectionId: collectionId,
+        collection: collection,
         task: widget.task,
       ));
 
@@ -115,7 +116,7 @@ class _AddCollectionBottomSheetState extends State<AddCollectionBottomSheet> {
                     itemBuilder: (context, index) {
                       final collection = viewModel.collections[index];
                       return TileItem.preview(
-                        onTap: () => onSelect(collection.id),
+                        onTap: () => onSelect(collection),
                         title: collection.title,
                       );
                     },

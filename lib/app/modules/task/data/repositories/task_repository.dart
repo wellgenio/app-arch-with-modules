@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:modular_di_app/app/modules/task/domain/dtos/task_dto.dart';
 import 'package:result_dart/result_dart.dart';
@@ -8,98 +7,69 @@ import '../../domain/entities/task_entity.dart';
 import '../services/task_service.dart';
 
 abstract class ITaskRepository {
+  Stream<List<TaskEntity>> observerListTask();
+
+  Stream<TaskEntity> observerTask();
+
   AsyncResult<List<TaskEntity>> getTasks();
 
-  AsyncResult<TaskEntity> getTask(int taskId);
+  AsyncResult<TaskEntity> getTask(String taskId);
 
   AsyncResult<Unit> addTask(TaskDto dto);
 
   AsyncResult<Unit> updateTask(TaskDto dto);
 
   AsyncResult<Unit> deleteTask(TaskEntity task);
-
-  Stream<List<TaskEntity>> observerTasks();
 }
 
 class TaskRepository implements ITaskRepository {
-  final TaskService tasksService;
-  final bool isCacheEnabled;
-  final bool isErrorEnabled;
+  final TaskService _tasksService;
 
-  TaskRepository.cached(this.tasksService)
-      : isCacheEnabled = true,
-        isErrorEnabled = false;
-
-  TaskRepository.noCache(this.tasksService)
-      : isCacheEnabled = false,
-        isErrorEnabled = false;
-
-  TaskRepository.error(this.tasksService)
-      : isCacheEnabled = true,
-        isErrorEnabled = true;
-
-  List<TaskEntity>? _cachedTasks = [
-    TaskEntity(id: 1, title: 'Teste 1', value: false),
-    TaskEntity(id: 2, title: 'Teste 2', value: true),
-  ];
-
-  late final StreamController<List<TaskEntity>> _streamCtrl =
+  late final StreamController<List<TaskEntity>> _streamTasks =
       StreamController.broadcast();
+
+  late final StreamController<TaskEntity> _streamTask =
+      StreamController.broadcast();
+
+  String? _cachedTaskId;
+
+  TaskRepository(this._tasksService);
+
+  @override
+  Stream<List<TaskEntity>> observerListTask() => _streamTasks.stream;
+
+  @override
+  Stream<TaskEntity> observerTask() => _streamTask.stream;
 
   @override
   AsyncResult<List<TaskEntity>> getTasks() async {
-    if (isCacheEnabled && _cachedTasks != null) {
-      if (isErrorEnabled) {
-        throw 'You have already fetched the profile';
-      }
-      log('$TaskRepository: returning cached tasks');
-      _streamCtrl.add(_cachedTasks!);
-      return Success(_cachedTasks!);
-    }
-
-    final tasks = await tasksService.getTasks();
-    if (isCacheEnabled) {
-      _cachedTasks = tasks.getOrNull();
-      _streamCtrl.add(_cachedTasks!);
-    }
-
-    return tasks;
+    return _tasksService.getTasks().onSuccess(_streamTasks.add);
   }
 
-  int currentId = 3;
+  @override
+  AsyncResult<TaskEntity> getTask(String taskId) async {
+    _cachedTaskId = taskId;
+    return _tasksService.getTask(taskId)
+        .onSuccess(_streamTask.add);
+  }
 
   @override
   AsyncResult<Unit> addTask(TaskDto dto) async {
-    _cachedTasks?.add(TaskEntity(id: currentId++, title: dto.title, value: dto.value));
-    return Success(unit);
+    return _tasksService.addTask(dto).onSuccess((_) => getTasks());
   }
 
   @override
   AsyncResult<Unit> deleteTask(TaskEntity task) async {
-    _cachedTasks?.removeWhere((data) => data.id == task.id);
-    return Success(unit);
+    return _tasksService.deleteTask(task.id).onSuccess((_) => getTasks());
   }
 
   @override
   AsyncResult<Unit> updateTask(TaskDto dto) async {
-    _cachedTasks = _cachedTasks?.map((data) {
-      if (data.id == dto.id) {
-        return TaskEntity(id: dto.id!, title: dto.title, value: dto.value);
+    return _tasksService.updateTask(dto).onSuccess((_) {
+      if (_cachedTaskId != null) {
+        getTask(_cachedTaskId!);
       }
-      return data;
-    }).toList();
-    return Success(unit);
-  }
-
-  @override
-  Stream<List<TaskEntity>> observerTasks() => _streamCtrl.stream;
-
-  @override
-  AsyncResult<TaskEntity> getTask(int taskId) async {
-    if (_cachedTasks == null) return Failure(Exception('not found task'));
-
-    final task = _cachedTasks!.firstWhere((data) => data.id == taskId);
-
-    return Success(task);
+      getTasks();
+    });
   }
 }

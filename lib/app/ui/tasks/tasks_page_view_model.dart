@@ -20,7 +20,7 @@ class TasksPageViewModel extends ChangeNotifier {
     getTasksCommand = Command0(_getTasks);
     checkedCommand = Command1(_onChecked);
 
-    taskRepository.observerTasks().listen(_updateScreen);
+    taskRepository.observerListTask().listen(_updateScreen);
   }
 
   TypeFilter _filter = TypeFilter.all;

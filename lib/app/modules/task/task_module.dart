@@ -10,8 +10,7 @@ List<SingleChildWidget> get taskModuleProviders {
       create: (context) => TaskService(context.read()),
     ),
     Provider(
-      create: (context) =>
-      TaskRepository.cached(context.read()) as ITaskRepository,
+      create: (context) => TaskRepository(context.read<TaskService>()) as ITaskRepository,
     ),
   ];
 }

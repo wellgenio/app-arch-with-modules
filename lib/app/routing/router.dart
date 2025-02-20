@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:modular_di_app/app/modules/collection/domain/usecases/get_tasks_by_collection.dart';
 import 'package:provider/provider.dart';
 
 import '../modules/auth/data/repositories/auth_repository.dart';
 import '../modules/collection/data/repositories/collection_repository.dart';
+import '../modules/core/event_bus/event_bus.dart';
 import '../modules/task/data/repositories/task_repository.dart';
 import '../ui/auth/login/login_page.dart';
 import '../ui/auth/login/login_page_view_model.dart';
@@ -43,7 +45,7 @@ class AppRouter {
               child: HomePage(),
             ),
         RoutePaths.taskDetails.path: (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as int;
+          final args = ModalRoute.of(context)?.settings.arguments as String;
 
           return ChangeNotifierProvider(
             create: (_) => TaskDetailsPageViewModel(
@@ -57,16 +59,18 @@ class AppRouter {
           );
         },
         RoutePaths.collectionDetails.path: (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as int;
+          final args = ModalRoute.of(context)?.settings.arguments as String;
 
           return ChangeNotifierProvider(
             create: (_) => CollectionDetailsPageViewModel(
               context.read<ICollectionRepository>(),
               context.read<ITaskRepository>(),
+              context.read<GetTasksByCollection>(),
+              context.read<EventBus>(),
             ),
             child: CollectionDetailsPage(
               argument: CollectionDetailsArgument(
-                taskId: args,
+                collectionId: args,
               ),
             ),
           );

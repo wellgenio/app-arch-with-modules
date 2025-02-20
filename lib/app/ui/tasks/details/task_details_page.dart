@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../modules/collection/data/repositories/collection_repository.dart';
+import '../../../modules/core/event_bus/event_bus.dart';
 import '../../../modules/task/data/repositories/task_repository.dart';
 import '../widgets/add_collection_bottom_sheet/add_collection_bottom_sheet_view_model.dart';
 import '../widgets/add_collection_bottom_sheet/add_collection_bottom_sheet.dart';
@@ -13,7 +14,7 @@ import '../widgets/form_task_bottom_sheet/form_task_bottom_sheet_view_model.dart
 import 'task_details_page_view_model.dart';
 
 class TaskDetailsArgument {
-  final int taskId;
+  final String taskId;
 
   TaskDetailsArgument({required this.taskId});
 }
@@ -22,7 +23,7 @@ class TaskDetailsPage extends StatefulWidget {
   final TaskDetailsArgument argument;
 
   TaskDetailsPage({super.key, required this.argument}) //
-      : assert(argument.taskId > 0);
+      : assert(argument.taskId.isNotEmpty);
 
   @override
   State<TaskDetailsPage> createState() => _TaskDetailsPageState();
@@ -123,13 +124,10 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                                   return ChangeNotifierProvider(
                                     create: (_) => FormTaskBottomSheetViewModel(
                                       context.read<ITaskRepository>(),
+                                      context.read<EventBus>(),
                                     ),
                                     child: FormTaskBottomSheet.editable(
                                       task: task,
-                                      onSuccess: () {
-                                        viewModel.getTaskCommand
-                                            .execute(task.id);
-                                      },
                                     ),
                                   );
                                 });

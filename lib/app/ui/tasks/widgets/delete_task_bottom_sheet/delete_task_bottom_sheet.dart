@@ -17,7 +17,6 @@ class DeleteTaskBottomSheet extends StatefulWidget {
 
   final VoidCallback? onSuccess;
 
-
   @override
   State<DeleteTaskBottomSheet> createState() => _DeleteTaskBottomSheetState();
 }

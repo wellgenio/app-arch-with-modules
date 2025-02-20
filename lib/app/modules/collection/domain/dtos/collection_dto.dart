@@ -1,18 +1,24 @@
 class CollectionDto {
-  int id;
+  String id;
   String title;
 
-  List<int> tasks;
+  List<String> tasks;
 
   CollectionDto({required this.id, required this.title, required this.tasks});
 
   factory CollectionDto.empty() => CollectionDto(
-        id: -1,
+        id: '-1',
         title: '',
         tasks: const [],
       );
 
   setTitle(String value) => title = value;
 
-  setTasks(List<int> value) => tasks = value;
+  setTasks(List<String> value) => tasks = value;
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'tasks': tasks,
+  };
 }

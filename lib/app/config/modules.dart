@@ -9,7 +9,7 @@ List<SingleChildWidget> get providers {
   return [
     ...coreModuleProviders,
     ...authModuleProviders,
-    ...collectionModuleProviders,
     ...taskModuleProviders,
+    ...collectionModuleProviders,
   ];
 }

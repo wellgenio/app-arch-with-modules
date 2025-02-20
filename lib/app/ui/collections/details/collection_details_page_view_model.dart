@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:result_dart/result_dart.dart';
 
+import '../../../global_events/updated_task_event.dart';
+import '../../../modules/collection/domain/usecases/get_tasks_by_collection.dart';
+import '../../../modules/core/event_bus/event_bus.dart';
 import '../../../modules/task/data/repositories/task_repository.dart';
 import '../../../modules/task/domain/dtos/task_dto.dart';
 import '../../../modules/task/domain/entities/task_entity.dart';
@@ -9,7 +12,7 @@ import '../../../modules/collection/domain/entities/collection_entity.dart';
 import '../../../utils/command.dart';
 
 typedef CheckedParams = ({
-  int collectionId,
+  String collectionId,
   TaskEntity task,
   bool value,
 });
@@ -19,12 +22,27 @@ enum TypeFilter { all, doValue, completed }
 class CollectionDetailsPageViewModel extends ChangeNotifier {
   final ICollectionRepository collectionRepository;
   final ITaskRepository taskRepository;
+  final GetTasksByCollection getTasksByCollection;
+
+  final EventBus eventBus;
 
   CollectionDetailsPageViewModel(
-      this.collectionRepository, this.taskRepository) {
+    this.collectionRepository,
+    this.taskRepository,
+    this.getTasksByCollection,
+    this.eventBus,
+  ) {
     getCollectionCommand = Command1(_getCollection);
     checkedCommand = Command1(_onChecked);
+
+    collectionRepository.observerCollection().listen(_updateCollectionOnScreen);
+
+    eventBus.on<UpdatedTaskEvent>().listen(_refreshTaskByCollection);
   }
+
+  String? _cachedCollectionId;
+
+  bool canRefresh = false;
 
   CollectionEntity _collection = CollectionEntity.empty();
 
@@ -42,39 +60,18 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
 
   bool get hasTasks => _tasks.isNotEmpty;
 
-  late final Command1<CollectionEntity, int> getCollectionCommand;
+  late final Command1<List<TaskEntity>, String> getCollectionCommand;
 
   late final Command1<Unit, CheckedParams> checkedCommand;
 
-  AsyncResult<CollectionEntity> _getCollection(int collectionId) async {
-    final [
-      resultTasks as ResultDart<List<TaskEntity>, Exception>,
-      resultCollection as ResultDart<CollectionEntity, Exception>,
-    ] = await Future.wait([
-      taskRepository.getTasks(),
-      collectionRepository.getCollection(collectionId),
-    ]);
+  AsyncResult<List<TaskEntity>> _getCollection(String collectionId) async {
+    _cachedCollectionId = collectionId;
 
-    if (resultTasks.isError()) {
-      return Failure(resultTasks.exceptionOrNull()!);
-    }
-
-    if (resultCollection.isError()) {
-      return Failure(resultCollection.exceptionOrNull()!);
-    }
-
-    final tasks = resultTasks.getOrNull();
-    final collection = resultCollection.getOrNull();
-
-    if (tasks == null || collection == null) {
-      return Failure(Exception('Not found'));
-    }
-
-    _tasks = tasks.where((data) => collection.tasks.contains(data.id)).toList();
-
-    _updateCollectionOnScreen(collection);
-    _updateListTaskOnScreen();
-    return Success(collection);
+    return await collectionRepository
+        .getCollection(collectionId)
+        .onSuccess(_updateCollectionOnScreen)
+        .flatMap(getTasksByCollection.call)
+        .onSuccess(_updateListTaskByCollectionOnScreen);
   }
 
   AsyncResult<Unit> _onChecked(CheckedParams params) {
@@ -109,15 +106,24 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
   }
 
   _checkFilter([_]) => switch (_filter) {
-    TypeFilter.doValue => onDo(),
-    TypeFilter.completed => onCompleted(),
-    _ => null,
-  };
+        TypeFilter.doValue => onDo(),
+        TypeFilter.completed => onCompleted(),
+        _ => null,
+      };
 
   _updateCollectionOnScreen(CollectionEntity collection) {
     _collection = collection;
     notifyListeners();
   }
 
-  _updateListTaskOnScreen([_]) => collectionRepository.getCollections();
+  _updateListTaskByCollectionOnScreen(List<TaskEntity> tasks) {
+    _tasks = tasks;
+    notifyListeners();
+  }
+
+  _refreshTaskByCollection([_]) {
+    if (_cachedCollectionId != null) {
+      _getCollection(_cachedCollectionId!);
+    }
+  }
 }

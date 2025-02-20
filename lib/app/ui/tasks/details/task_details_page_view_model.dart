@@ -10,15 +10,17 @@ class TaskDetailsPageViewModel extends ChangeNotifier {
 
   TaskDetailsPageViewModel(this.taskRepository) {
     getTaskCommand = Command1(_getTask);
+
+    taskRepository.observerTask().listen(updateScreen);
   }
 
   TaskEntity _task = TaskEntity.empty();
 
   TaskEntity get task => _task;
 
-  late final Command1<TaskEntity, int> getTaskCommand;
+  late final Command1<TaskEntity, String> getTaskCommand;
 
-  AsyncResult<TaskEntity> _getTask(int taskId) => taskRepository
+  AsyncResult<TaskEntity> _getTask(String taskId) => taskRepository
       .getTask(taskId)
       .onSuccess(updateScreen)
       .onSuccess(updateListTask);

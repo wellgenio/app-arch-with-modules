@@ -11,7 +11,7 @@ class CollectionsPageViewModel extends ChangeNotifier {
   CollectionsPageViewModel(this.collectionRepository) {
     getCollectionsCommand = Command0(_getTasks);
 
-    collectionRepository.observerCollections().listen(updateScreen);
+    collectionRepository.observerListCollection().listen(updateScreen);
   }
 
   List<CollectionEntity> _collections = const [];

@@ -17,9 +17,9 @@ import '../widgets/form_collection_bottom_sheet/form_collection_bottom_sheet_vie
 import 'collection_details_page_view_model.dart';
 
 class CollectionDetailsArgument {
-  final int taskId;
+  final String collectionId;
 
-  CollectionDetailsArgument({required this.taskId});
+  CollectionDetailsArgument({required this.collectionId});
 }
 
 class CollectionDetailsPage extends StatefulWidget {
@@ -28,7 +28,7 @@ class CollectionDetailsPage extends StatefulWidget {
   CollectionDetailsPage({
     super.key,
     required this.argument,
-  }) : assert(argument.taskId > 0);
+  }) : assert(argument.collectionId.isNotEmpty);
 
   @override
   State<CollectionDetailsPage> createState() => _CollectionDetailsPageState();
@@ -43,10 +43,10 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
   @override
   void initState() {
     super.initState();
-    viewModel.getCollectionCommand.execute(argument.taskId);
+    viewModel.getCollectionCommand.execute(argument.collectionId);
   }
 
-  void goToDetailsTask([int taskId = 1]) => //
+  void goToDetailsTask([String taskId = '1']) => //
       Navigator.of(context).pushNamed(
         RoutePaths.taskDetails.path,
         arguments: taskId,

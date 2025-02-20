@@ -8,41 +8,34 @@ import '../../../shared/widgets/primary_button.dart';
 import 'form_task_bottom_sheet_view_model.dart';
 
 class FormTaskBottomSheet extends StatefulWidget {
-  const FormTaskBottomSheet._(
-      {required this.editable,
-      this.task,
-      this.onSuccess});
+  const FormTaskBottomSheet._({
+    required this.editable,
+    this.task,
+  });
 
-  factory FormTaskBottomSheet.create({
-    VoidCallback? onSuccess,
-  }) =>
-      FormTaskBottomSheet._(
+  factory FormTaskBottomSheet.create() => FormTaskBottomSheet._(
         editable: false,
-        onSuccess: onSuccess,
       );
 
   factory FormTaskBottomSheet.editable({
     required TaskEntity task,
-    VoidCallback? onSuccess,
   }) =>
       FormTaskBottomSheet._(
         editable: true,
         task: task,
-        onSuccess: onSuccess,
       );
 
   final bool editable;
 
   final TaskEntity? task;
 
-  final VoidCallback? onSuccess;
-
   @override
   State<FormTaskBottomSheet> createState() => _FormTaskBottomSheetState();
 }
 
 class _FormTaskBottomSheetState extends State<FormTaskBottomSheet> {
-  late final FormTaskBottomSheetViewModel viewModel = context.read<FormTaskBottomSheetViewModel>();
+  late final FormTaskBottomSheetViewModel viewModel =
+      context.read<FormTaskBottomSheetViewModel>();
 
   final formKey = GlobalKey<FormState>();
   TaskDto dto = TaskDto.empty();
@@ -60,7 +53,6 @@ class _FormTaskBottomSheetState extends State<FormTaskBottomSheet> {
 
   listenerAdd() {
     if (viewModel.addTaskCommand.completed) {
-      widget.onSuccess?.call();
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -83,7 +75,6 @@ class _FormTaskBottomSheetState extends State<FormTaskBottomSheet> {
 
   listenerUpdate() {
     if (viewModel.updateTaskCommand.completed) {
-      widget.onSuccess?.call();
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

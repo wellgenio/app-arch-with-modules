@@ -1,7 +1,7 @@
 class CollectionEntity {
-  final int id;
+  final String id;
   final String title;
-  final List<int> tasks;
+  final List<String> tasks;
 
   CollectionEntity({
     required this.id,
@@ -10,7 +10,7 @@ class CollectionEntity {
   });
 
   factory CollectionEntity.empty() => CollectionEntity(
-        id: -1,
+        id: '-1',
         title: '',
         tasks: const [],
       );

@@ -3,6 +3,7 @@ import 'package:provider/single_child_widget.dart';
 
 import 'data/repositories/collection_repository.dart';
 import 'data/services/collection_service.dart';
+import 'domain/usecases/get_tasks_by_collection.dart';
 
 List<SingleChildWidget> get collectionModuleProviders {
   return [
@@ -11,7 +12,10 @@ List<SingleChildWidget> get collectionModuleProviders {
     ),
     Provider(
       create: (context) =>
-      CollectionRepository.cached(context.read()) as ICollectionRepository,
+          CollectionRepository(context.read()) as ICollectionRepository,
+    ),
+    Provider(
+      create: (context) => GetTasksByCollection(context.read()),
     ),
   ];
 }

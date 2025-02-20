@@ -71,7 +71,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   void onSelect(TaskEntity task) => //
       viewModel.addTaskOnCollectionCommand.execute((
-        collectionId: widget.collection.id,
+        collection: widget.collection,
         task: task,
       ));
 

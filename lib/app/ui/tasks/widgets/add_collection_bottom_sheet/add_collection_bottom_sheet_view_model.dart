@@ -6,7 +6,7 @@ import '../../../../modules/collection/domain/entities/collection_entity.dart';
 import '../../../../modules/task/domain/entities/task_entity.dart';
 import '../../../../utils/command.dart';
 
-typedef AddTaskParam = ({int collectionId, TaskEntity task});
+typedef AddTaskParam = ({CollectionEntity collection, TaskEntity task});
 
 class AddCollectionBottomSheetViewModel extends ChangeNotifier {
   final ICollectionRepository collectionRepository;
@@ -34,7 +34,7 @@ class AddCollectionBottomSheetViewModel extends ChangeNotifier {
           .onSuccess(_updateCollectionsOnScreen);
 
   AsyncResult<Unit> _addTaskOnCollection(AddTaskParam params) => //
-      collectionRepository.addTask(params.collectionId, params.task.id);
+      collectionRepository.addTask(params.collection, params.task.id);
 
   _updateCollectionsOnScreen(List<CollectionEntity> collections) {
     _collections = collections;

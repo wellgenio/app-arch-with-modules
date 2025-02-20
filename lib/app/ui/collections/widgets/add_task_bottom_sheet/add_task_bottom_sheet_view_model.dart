@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../../modules/collection/data/repositories/collection_repository.dart';
+import '../../../../modules/collection/domain/entities/collection_entity.dart';
 import '../../../../modules/task/data/repositories/task_repository.dart';
 import '../../../../modules/task/domain/entities/task_entity.dart';
 import '../../../../utils/command.dart';
 
-typedef AddTaskParam = ({int collectionId, TaskEntity task});
+typedef AddTaskParam = ({CollectionEntity collection, TaskEntity task});
 
 class AddTaskBottomSheetViewModel extends ChangeNotifier {
   final ICollectionRepository collectionRepository;
@@ -33,7 +34,7 @@ class AddTaskBottomSheetViewModel extends ChangeNotifier {
       taskRepository.getTasks().onSuccess(_updateTasksOnScreen);
 
   AsyncResult<Unit> _addTaskOnCollection(AddTaskParam params) => //
-      collectionRepository.addTask(params.collectionId, params.task.id);
+      collectionRepository.addTask(params.collection, params.task.id);
 
   _updateTasksOnScreen(List<TaskEntity> tasks) {
     _tasks = tasks;

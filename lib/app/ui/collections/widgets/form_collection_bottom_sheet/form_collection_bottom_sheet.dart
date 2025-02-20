@@ -11,7 +11,6 @@ class FormCollectionBottomSheet extends StatefulWidget {
   const FormCollectionBottomSheet._({
     required this.editable,
     this.collection,
-    this.onSuccess,
   });
 
   factory FormCollectionBottomSheet.create({
@@ -19,7 +18,6 @@ class FormCollectionBottomSheet extends StatefulWidget {
   }) => //
       FormCollectionBottomSheet._(
         editable: false,
-        onSuccess: onSuccess,
       );
 
   factory FormCollectionBottomSheet.editable({
@@ -29,14 +27,11 @@ class FormCollectionBottomSheet extends StatefulWidget {
       FormCollectionBottomSheet._(
         editable: true,
         collection: collection,
-        onSuccess: onSuccess,
       );
 
   final bool editable;
 
   final CollectionEntity? collection;
-
-  final VoidCallback? onSuccess;
 
   @override
   State<FormCollectionBottomSheet> createState() =>
@@ -67,7 +62,6 @@ class _FormCollectionBottomSheetState extends State<FormCollectionBottomSheet> {
 
   listenerAdd() {
     if (viewModel.addCollectionCommand.completed) {
-      widget.onSuccess?.call();
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -90,7 +84,6 @@ class _FormCollectionBottomSheetState extends State<FormCollectionBottomSheet> {
 
   listenerUpdate() {
     if (viewModel.updateCollectionCommand.completed) {
-      widget.onSuccess?.call();
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
