@@ -107,7 +107,7 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Text(
-                        'Details Collection',
+                        collection.title,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white,
