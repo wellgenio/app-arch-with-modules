@@ -34,6 +34,25 @@ class _TasksPageState extends State<TasksPage> {
   void initState() {
     super.initState();
     viewModel.getTasksCommand.execute();
+    viewModel.addListener(listener);
+  }
+
+  void listener() {
+    if (viewModel.optimisticAddTaskError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Color(0xffff0052),
+          duration: Duration(seconds: 1),
+          content: Text('Error adding task!'),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    viewModel.removeListener(listener);
+    super.dispose();
   }
 
   void goToDetails([String taskId = '1']) => //

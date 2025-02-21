@@ -10,7 +10,7 @@ import 'adapters/collection_adapter.dart';
 class CollectionService {
   final IRestClient _httpClient;
 
-  const CollectionService(this._httpClient);
+  CollectionService(this._httpClient);
 
   AsyncResult<List<CollectionEntity>> getCollections() async {
     try {
@@ -43,8 +43,12 @@ class CollectionService {
     }
   }
 
+  int count = 1;
   AsyncResult<Unit> addCollection(CollectionDto dto) async {
     try {
+      int countStr = count++;
+      dto.id = countStr.toString();
+
       await _httpClient
           .post(RestClientRequest(path: '/collections', data: dto.toJson()));
 

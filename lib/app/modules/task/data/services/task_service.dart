@@ -43,12 +43,11 @@ class TaskService {
     }
   }
 
-  int count = 3;
+  int count = 1;
   AsyncResult<Unit> addTask(TaskDto dto) async {
     await Future.delayed(Duration(seconds: 2));
 
     try {
-
       int countStr = count++;
       dto.id = countStr.toString();
 

@@ -32,26 +32,7 @@ class TasksPageViewModel extends ChangeNotifier {
         .listen(_optimisticTask);
   }
 
-  final optimisticKey = 'optimistic';
-
-  _optimisticTask(OptimisticAddTaskEvent event) {
-    switch (event) {
-      case OptimisticAddTaskLoadingEvent(:final data):
-        _tasks.add(
-          TaskEntity(
-            id: optimisticKey,
-            title: data.title,
-            value: data.value,
-          ),
-        );
-        break;
-
-      case OptimisticAddTaskErrorEvent():
-        _tasks = _tasks.where((task) => task.id != optimisticKey).toList();
-        break;
-    }
-    notifyListeners();
-  }
+  bool optimisticAddTaskError = false;
 
   TypeFilter _filter = TypeFilter.all;
 
@@ -102,6 +83,29 @@ class TasksPageViewModel extends ChangeNotifier {
   onCompleted() {
     _filter = TypeFilter.completed;
     _filteredTasks = _tasks.where((data) => data.value == true).toList();
+    notifyListeners();
+  }
+
+  final optimisticKey = 'optimistic';
+
+  _optimisticTask(OptimisticAddTaskEvent event) {
+    optimisticAddTaskError = false;
+    switch (event) {
+      case OptimisticAddTaskLoadingEvent(:final data):
+        _tasks.add(
+          TaskEntity(
+            id: optimisticKey,
+            title: data.title,
+            value: data.value,
+          ),
+        );
+        break;
+
+      case OptimisticAddTaskErrorEvent():
+        _tasks = _tasks.where((task) => task.id != optimisticKey).toList();
+        optimisticAddTaskError = true;
+        break;
+    }
     notifyListeners();
   }
 

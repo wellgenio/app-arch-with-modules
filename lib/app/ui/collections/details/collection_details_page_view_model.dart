@@ -131,13 +131,10 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
   }
 
   _refreshCollection(OptimisticTaskEvent event) {
-    if (event is! OptimisticUpdateTaskCompletedEvent ||
-        event is! OptimisticAddTaskEvent) {
-      return;
-    }
-
-    if (_cachedCollectionId != null) {
-      _getCollection(_cachedCollectionId!);
+    if (event is OptimisticUpdateTaskCompletedEvent) {
+      if (_cachedCollectionId != null) {
+        _getCollection(_cachedCollectionId!);
+      }
     }
   }
 
