@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../modules/auth/data/repositories/auth_repository.dart';
 import '../modules/collection/data/repositories/collection_repository.dart';
-import '../modules/core/event_bus/event_bus.dart';
 import '../modules/task/data/repositories/task_repository.dart';
 import '../ui/auth/login/login_page.dart';
 import '../ui/auth/login/login_page_view_model.dart';
@@ -66,7 +65,6 @@ class AppRouter {
               context.read<ICollectionRepository>(),
               context.read<ITaskRepository>(),
               context.read<GetTasksByCollection>(),
-              context.read<EventBus>(),
             ),
             child: CollectionDetailsPage(
               argument: CollectionDetailsArgument(

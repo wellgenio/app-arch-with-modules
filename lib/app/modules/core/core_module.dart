@@ -3,12 +3,10 @@ import 'package:provider/single_child_widget.dart';
 
 import 'client_http/dio/rest_client_dio_impl.dart';
 import 'client_http/i_rest_client.dart';
-import 'event_bus/event_bus.dart';
 
 List<SingleChildWidget> get coreModuleProviders {
   return [
     Provider(create: (context) => DioFactory.dio()),
     Provider(create: (context) => RestClientDioImpl(dio: context.read()) as IRestClient),
-    Provider(create: (context) => EventBus()),
   ];
 }

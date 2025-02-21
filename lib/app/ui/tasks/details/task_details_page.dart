@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../modules/collection/data/repositories/collection_repository.dart';
-import '../../../modules/core/event_bus/event_bus.dart';
 import '../../../modules/task/data/repositories/task_repository.dart';
 import '../widgets/add_collection_bottom_sheet/add_collection_bottom_sheet_view_model.dart';
 import '../widgets/add_collection_bottom_sheet/add_collection_bottom_sheet.dart';

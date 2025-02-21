@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../modules/collection/domain/usecases/get_tasks_by_collection.dart';
-import '../../../modules/core/event_bus/event_bus.dart';
 import '../../../modules/task/data/repositories/task_repository.dart';
 import '../../../modules/task/domain/dtos/task_dto.dart';
 import '../../../modules/task/domain/entities/task_entity.dart';
@@ -26,13 +25,10 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
   final ITaskRepository taskRepository;
   final GetTasksByCollection getTasksByCollection;
 
-  final EventBus eventBus;
-
   CollectionDetailsPageViewModel(
     this.collectionRepository,
     this.taskRepository,
     this.getTasksByCollection,
-    this.eventBus,
   ) {
     getCollectionCommand = Command1(_getCollection);
     checkedCommand = Command1(_onChecked);
