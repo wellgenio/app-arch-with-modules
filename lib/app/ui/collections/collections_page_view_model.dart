@@ -27,4 +27,10 @@ class CollectionsPageViewModel extends ChangeNotifier {
     _collections = data;
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    print('SAIU Collection List');
+    super.dispose();
+  }
 }

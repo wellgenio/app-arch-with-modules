@@ -8,6 +8,7 @@ class TileItem extends StatelessWidget {
     this.value,
     this.menuChildren,
     required this.verifiable,
+    required this.disable,
   });
 
   factory TileItem.preview({
@@ -15,6 +16,7 @@ class TileItem extends StatelessWidget {
     required String title,
     List<MenuItemButton>? menuChildren,
     bool? value,
+    bool? disable,
   }) =>
       TileItem._(
         onTap: onTap,
@@ -22,6 +24,7 @@ class TileItem extends StatelessWidget {
         menuChildren: menuChildren,
         verifiable: false,
         value: value,
+        disable: disable ?? false,
       );
 
   factory TileItem.verifiable({
@@ -30,6 +33,7 @@ class TileItem extends StatelessWidget {
     List<MenuItemButton>? menuChildren,
     required ValueChanged<bool?> onChanged,
     required bool value,
+    bool? disable,
   }) =>
       TileItem._(
         onChanged: onChanged,
@@ -38,6 +42,7 @@ class TileItem extends StatelessWidget {
         title: title,
         menuChildren: menuChildren,
         verifiable: true,
+        disable: disable ?? false,
       );
 
   final bool verifiable;
@@ -52,6 +57,8 @@ class TileItem extends StatelessWidget {
 
   final String title;
 
+  final bool disable;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -65,19 +72,23 @@ class TileItem extends StatelessWidget {
         ),
         margin: EdgeInsets.symmetric(vertical: 12.0),
         child: Row(mainAxisSize: MainAxisSize.max, children: [
-          if (verifiable) Checkbox(value: value, onChanged: onChanged),
+          if (verifiable)
+            Checkbox(
+              value: value,
+              onChanged: disable ? null : onChanged,
+            ),
           SizedBox(width: 12.0),
           if (!verifiable) SizedBox(width: 12.0),
           Expanded(
             child: Text(
               title,
               style: TextStyle(
-                fontSize: 20,
-                overflow: TextOverflow.ellipsis,
-              ),
+                  fontSize: 20,
+                  overflow: TextOverflow.ellipsis,
+                  color: disable ? Colors.grey : Colors.black),
             ),
           ),
-          if (menuChildren != null)
+          if (menuChildren != null && !disable)
             MenuAnchor(
               style: MenuStyle(
                 backgroundColor: WidgetStateProperty.all(Colors.white),

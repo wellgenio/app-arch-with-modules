@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:modular_di_app/app/modules/task/domain/dtos/task_dto.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../modules/task/domain/entities/task_entity.dart';
 import '../../modules/task/data/repositories/task_repository.dart';
+import '../../modules/task/domain/events/optimistic_task_events.dart';
 import '../../utils/command.dart';
 
 typedef CheckedParams = ({
@@ -20,7 +23,35 @@ class TasksPageViewModel extends ChangeNotifier {
     getTasksCommand = Command0(_getTasks);
     checkedCommand = Command1(_onChecked);
 
-    taskRepository.observerListTask().listen(_updateScreen);
+    subscription = taskRepository //
+        .observerListTask()
+        .listen(_updateScreen);
+
+    subscriptionOptimistic = taskRepository
+        .observerOptimisticTask<OptimisticAddTaskEvent>()
+        .listen(_optimisticTask);
+  }
+
+  final optimisticKey = 'optimistic';
+  _optimisticTask(OptimisticAddTaskEvent event) {
+    final dto = event.data;
+
+    if (event.hasError == true) {
+      _tasks = _tasks.where((task) => task.id != optimisticKey).toList();
+      notifyListeners();
+      return;
+    }
+
+    if (dto == null) return;
+
+    _tasks.add(
+      TaskEntity(
+        id: optimisticKey,
+        title: dto.title,
+        value: dto.value,
+      ),
+    );
+    notifyListeners();
   }
 
   TypeFilter _filter = TypeFilter.all;
@@ -36,6 +67,10 @@ class TasksPageViewModel extends ChangeNotifier {
   late final Command0<List<TaskEntity>> getTasksCommand;
 
   late final Command1<Unit, CheckedParams> checkedCommand;
+
+  late final StreamSubscription<List<TaskEntity>> subscription;
+
+  late final StreamSubscription<OptimisticTaskEvent> subscriptionOptimistic;
 
   AsyncResult<List<TaskEntity>> _getTasks() => //
       taskRepository.getTasks().onSuccess(_updateScreen);
@@ -80,5 +115,13 @@ class TasksPageViewModel extends ChangeNotifier {
   _updateScreen(List<TaskEntity> value) {
     _tasks = value;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    print('SAIU Task List');
+    subscription.cancel();
+    subscriptionOptimistic.cancel();
+    super.dispose();
   }
 }

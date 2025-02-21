@@ -1,18 +1,28 @@
 {
   "tasks": [
     {
-      "id": "1",
-      "title": "Test 15",
-      "value": false
-    },
-    {
-      "id": "2",
-      "title": "Test 2",
+      "id": "4",
+      "title": "Item 1",
       "value": true
     },
     {
+      "id": "5",
+      "title": "Nova Task",
+      "value": false
+    },
+    {
+      "id": "6",
+      "title": "Item 2",
+      "value": false
+    },
+    {
       "id": "3",
-      "title": "Item 5",
+      "title": "Item 10",
+      "value": false
+    },
+    {
+      "id": "4",
+      "title": "Item 14",
       "value": false
     }
   ],
@@ -27,7 +37,16 @@
     {
       "id": "2",
       "title": "Collection 2",
-      "tasks": []
+      "tasks": [
+        "5"
+      ]
+    },
+    {
+      "id": "-1",
+      "title": "Nova colecao",
+      "tasks": [
+        "3"
+      ]
     }
   ]
 }

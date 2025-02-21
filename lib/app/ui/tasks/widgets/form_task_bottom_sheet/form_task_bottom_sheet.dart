@@ -108,6 +108,11 @@ class _FormTaskBottomSheetState extends State<FormTaskBottomSheet> {
         viewModel.updateTaskCommand.execute(dto);
       } else {
         viewModel.addTaskCommand.execute(dto);
+        Future.microtask(() {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        });
       }
     }
   }

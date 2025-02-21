@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../modules/collection/data/repositories/collection_repository.dart';
-import '../../modules/core/event_bus/event_bus.dart';
 import '../../modules/task/data/repositories/task_repository.dart';
 import '../../modules/task/domain/dtos/task_dto.dart';
 import '../../routing/router.dart';
@@ -63,7 +62,6 @@ class _TasksPageState extends State<TasksPage> {
                 return ChangeNotifierProvider(
                   create: (_) => FormTaskBottomSheetViewModel(
                     context.read<ITaskRepository>(),
-                    context.read<EventBus>(),
                   ),
                   child: FormTaskBottomSheet.create(
                   ),
@@ -102,6 +100,7 @@ class _TasksPageState extends State<TasksPage> {
                         onTap: () => goToDetails(task.id),
                         title: task.title,
                         value: task.value,
+                        disable: (viewModel.optimisticKey == task.id),
                         onChanged: (value) => viewModel.checkedCommand
                             .execute((value: value ?? false, task: task)),
                         menuChildren: [
@@ -137,7 +136,6 @@ class _TasksPageState extends State<TasksPage> {
                                   return ChangeNotifierProvider(
                                     create: (_) => FormTaskBottomSheetViewModel(
                                       context.read<ITaskRepository>(),
-                                      context.read<EventBus>(),
                                     ),
                                     child: FormTaskBottomSheet.editable(
                                       task: task,

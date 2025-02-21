@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:result_dart/result_dart.dart';
 
@@ -11,7 +13,7 @@ class TaskDetailsPageViewModel extends ChangeNotifier {
   TaskDetailsPageViewModel(this.taskRepository) {
     getTaskCommand = Command1(_getTask);
 
-    taskRepository.observerTask().listen(updateScreen);
+    subscription = taskRepository.observerTask().listen(updateScreen);
   }
 
   TaskEntity _task = TaskEntity.empty();
@@ -19,6 +21,8 @@ class TaskDetailsPageViewModel extends ChangeNotifier {
   TaskEntity get task => _task;
 
   late final Command1<TaskEntity, String> getTaskCommand;
+
+  late final StreamSubscription<TaskEntity> subscription;
 
   AsyncResult<TaskEntity> _getTask(String taskId) => taskRepository
       .getTask(taskId)
@@ -31,4 +35,10 @@ class TaskDetailsPageViewModel extends ChangeNotifier {
   }
 
   updateListTask(_) => taskRepository.getTasks();
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
 }

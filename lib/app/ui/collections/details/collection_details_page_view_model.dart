@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:result_dart/result_dart.dart';
 
-import '../../../global_events/updated_task_event.dart';
 import '../../../modules/collection/domain/usecases/get_tasks_by_collection.dart';
 import '../../../modules/core/event_bus/event_bus.dart';
 import '../../../modules/task/data/repositories/task_repository.dart';
@@ -9,6 +10,7 @@ import '../../../modules/task/domain/dtos/task_dto.dart';
 import '../../../modules/task/domain/entities/task_entity.dart';
 import '../../../modules/collection/data/repositories/collection_repository.dart';
 import '../../../modules/collection/domain/entities/collection_entity.dart';
+import '../../../modules/task/domain/events/optimistic_task_events.dart';
 import '../../../utils/command.dart';
 
 typedef CheckedParams = ({
@@ -35,9 +37,12 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
     getCollectionCommand = Command1(_getCollection);
     checkedCommand = Command1(_onChecked);
 
-    collectionRepository.observerCollection().listen(_updateCollectionOnScreen);
+    subscriptionCollection = collectionRepository
+        .observerCollection()
+        .listen(_updateCollectionOnScreen);
 
-    eventBus.on<UpdatedTaskEvent>().listen(_refreshTaskByCollection);
+    subscriptionOptimisticTask =
+        taskRepository.observerOptimisticTask().listen(_refreshCollection);
   }
 
   String? _cachedCollectionId;
@@ -63,6 +68,10 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
   late final Command1<List<TaskEntity>, String> getCollectionCommand;
 
   late final Command1<Unit, CheckedParams> checkedCommand;
+
+  late final StreamSubscription<CollectionEntity> subscriptionCollection;
+
+  late final StreamSubscription<OptimisticTaskEvent> subscriptionOptimisticTask;
 
   AsyncResult<List<TaskEntity>> _getCollection(String collectionId) async {
     _cachedCollectionId = collectionId;
@@ -121,9 +130,22 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  _refreshTaskByCollection([_]) {
+  _refreshCollection(OptimisticTaskEvent event) {
+    if (event is! OptimisticUpdatedTaskEvent ||
+        event is! OptimisticAddTaskEvent) {
+      return;
+    }
+
     if (_cachedCollectionId != null) {
       _getCollection(_cachedCollectionId!);
     }
+  }
+
+  @override
+  void dispose() {
+    print('SAIU Collection');
+    subscriptionCollection.cancel();
+    subscriptionOptimisticTask.cancel();
+    super.dispose();
   }
 }

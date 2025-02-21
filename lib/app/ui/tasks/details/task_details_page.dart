@@ -124,7 +124,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                                   return ChangeNotifierProvider(
                                     create: (_) => FormTaskBottomSheetViewModel(
                                       context.read<ITaskRepository>(),
-                                      context.read<EventBus>(),
                                     ),
                                     child: FormTaskBottomSheet.editable(
                                       task: task,
