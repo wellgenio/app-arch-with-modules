@@ -33,24 +33,23 @@ class TasksPageViewModel extends ChangeNotifier {
   }
 
   final optimisticKey = 'optimistic';
+
   _optimisticTask(OptimisticAddTaskEvent event) {
-    final dto = event.data;
+    switch (event) {
+      case OptimisticAddTaskLoadingEvent(:final data):
+        _tasks.add(
+          TaskEntity(
+            id: optimisticKey,
+            title: data.title,
+            value: data.value,
+          ),
+        );
+        break;
 
-    if (event.hasError == true) {
-      _tasks = _tasks.where((task) => task.id != optimisticKey).toList();
-      notifyListeners();
-      return;
+      case OptimisticAddTaskErrorEvent():
+        _tasks = _tasks.where((task) => task.id != optimisticKey).toList();
+        break;
     }
-
-    if (dto == null) return;
-
-    _tasks.add(
-      TaskEntity(
-        id: optimisticKey,
-        title: dto.title,
-        value: dto.value,
-      ),
-    );
     notifyListeners();
   }
 

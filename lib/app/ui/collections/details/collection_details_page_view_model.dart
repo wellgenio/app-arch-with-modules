@@ -131,7 +131,7 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
   }
 
   _refreshCollection(OptimisticTaskEvent event) {
-    if (event is! OptimisticUpdatedTaskEvent ||
+    if (event is! OptimisticUpdateTaskCompletedEvent ||
         event is! OptimisticAddTaskEvent) {
       return;
     }

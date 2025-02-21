@@ -1,29 +1,47 @@
 import '../dtos/task_dto.dart';
 import '../entities/task_entity.dart';
 
-sealed class OptimisticTaskEvent {}
+abstract class OptimisticTaskEvent {}
 
-final class OptimisticAddTaskEvent extends OptimisticTaskEvent {
-  TaskDto? data;
-  bool hasError;
+/// Optimistic Add Task Event
+sealed class OptimisticAddTaskEvent extends OptimisticTaskEvent {}
 
-  OptimisticAddTaskEvent({this.data, this.hasError = false});
+final class OptimisticAddTaskLoadingEvent extends OptimisticAddTaskEvent {
+  final TaskDto data;
+
+  OptimisticAddTaskLoadingEvent(this.data);
 }
 
-final class OptimisticDeleteTaskEvent extends OptimisticTaskEvent {
-  TaskEntity? data;
-  bool hasError;
-
-  OptimisticDeleteTaskEvent({this.data, this.hasError = false});
+final class OptimisticAddTaskErrorEvent extends OptimisticAddTaskEvent {
+  OptimisticAddTaskErrorEvent();
 }
 
-final class OptimisticUpdateTaskEvent extends OptimisticTaskEvent {
-  TaskDto? data;
-  bool hasError;
+/// OOptimistic Delete Task Event
+sealed class OptimisticDeleteTaskEvent extends OptimisticTaskEvent {}
 
-  OptimisticUpdateTaskEvent({this.data, this.hasError = false});
+final class OptimisticDeleteTaskLoadingEvent extends OptimisticDeleteTaskEvent {
+  final TaskEntity data;
+
+  OptimisticDeleteTaskLoadingEvent(this.data);
 }
 
-final class OptimisticUpdatedTaskEvent extends OptimisticTaskEvent {
-  OptimisticUpdatedTaskEvent();
+final class OptimisticDeleteTaskErrorEvent extends OptimisticDeleteTaskEvent {
+  OptimisticDeleteTaskErrorEvent();
+}
+
+/// Optimistic Add Task Event
+sealed class OptimisticUpdateTaskEvent extends OptimisticTaskEvent {}
+
+final class OptimisticUpdateTaskLoadingEvent extends OptimisticDeleteTaskEvent {
+  final TaskDto data;
+
+  OptimisticUpdateTaskLoadingEvent(this.data);
+}
+
+final class OptimisticUpdateTaskCompletedEvent extends OptimisticDeleteTaskEvent {
+  OptimisticUpdateTaskCompletedEvent();
+}
+
+final class OptimisticUpdateTaskErrorEvent extends OptimisticDeleteTaskEvent {
+  OptimisticUpdateTaskErrorEvent();
 }

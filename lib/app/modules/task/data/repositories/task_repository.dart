@@ -65,41 +65,44 @@ class TaskRepository implements ITaskRepository {
   @override
   AsyncResult<Unit> addTask(TaskDto dto) async {
     // Optimistic state
-    _streamOptimistic.add(OptimisticAddTaskEvent(data: dto));
+    _streamOptimistic.add(OptimisticAddTaskLoadingEvent(dto));
 
     return _tasksService //
         .addTask(dto)
         .onSuccess((_) => getTasks()) // Refresh List
-        .onFailure((_) =>
-            _streamOptimistic.add(OptimisticAddTaskEvent(hasError: true)));
+        .onFailure((_) => _streamOptimistic.add(OptimisticAddTaskErrorEvent()));
   }
 
   @override
   AsyncResult<Unit> deleteTask(TaskEntity task) async {
     // Optimistic state
-    _streamOptimistic.add(OptimisticDeleteTaskEvent(data: task));
+    _streamOptimistic.add(OptimisticDeleteTaskLoadingEvent(task));
 
     return _tasksService
         .deleteTask(task.id)
         .onSuccess((_) => getTasks()) // Refresh List
         .onFailure(
           (_) => // Optimistic state
-              _streamOptimistic.add(OptimisticDeleteTaskEvent(hasError: true)),
+              _streamOptimistic.add(OptimisticDeleteTaskErrorEvent()),
         );
   }
 
   @override
   AsyncResult<Unit> updateTask(TaskDto dto) async {
-    _streamOptimistic.add(OptimisticUpdateTaskEvent(data: dto));
+    // Optimistic state
+    _streamOptimistic.add(OptimisticUpdateTaskLoadingEvent(dto));
 
     return _tasksService.updateTask(dto).onSuccess((_) {
       if (_cachedTaskId != null) {
-        getTask(_cachedTaskId!);
+        getTask(_cachedTaskId!); // Refresh Item
       }
+      // Refresh List
       getTasks();
-      _streamOptimistic.add(OptimisticUpdatedTaskEvent());
+      // Optimistic state
+      _streamOptimistic.add(OptimisticUpdateTaskCompletedEvent());
     }).onFailure(
-      (_) => _streamOptimistic.add(OptimisticUpdateTaskEvent(hasError: true)),
+      (_) => // Optimistic state
+          _streamOptimistic.add(OptimisticUpdateTaskErrorEvent()),
     );
   }
 }
