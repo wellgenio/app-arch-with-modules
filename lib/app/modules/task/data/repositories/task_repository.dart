@@ -12,7 +12,7 @@ abstract class ITaskRepository {
 
   Stream<TaskEntity> observerTask();
 
-  Stream<T> observerOptimisticTask<T extends OptimisticTaskEvent>();
+  Stream<T> observerOptimisticTask<T extends OptimisticTask>();
 
   AsyncResult<List<TaskEntity>> getTasks();
 
@@ -23,10 +23,20 @@ abstract class ITaskRepository {
   AsyncResult<Unit> updateTask(TaskDto dto);
 
   AsyncResult<Unit> deleteTask(TaskEntity task);
+
+  void notifyLastTaskList(List<TaskEntity> taskList);
+
+  void notifyLatestTaskDisplayed(TaskEntity task);
+
+  void notifyOptimisticState(OptimisticTask state);
+
+  void refreshTaskList([_]);
+
+  void refreshLatestTaskDisplayed(String? taskId);
 }
 
 class TaskRepository implements ITaskRepository {
-  final TaskService _tasksService;
+  final TaskService _taskApi;
 
   late final StreamController<List<TaskEntity>> _streamTasks =
       StreamController.broadcast();
@@ -34,9 +44,10 @@ class TaskRepository implements ITaskRepository {
   late final StreamController<TaskEntity> _streamTask =
       StreamController.broadcast();
 
-  String? _cachedTaskId;
+  late final StreamController<OptimisticTask> _streamOptimistic =
+      StreamController.broadcast();
 
-  TaskRepository(this._tasksService);
+  TaskRepository(this._taskApi);
 
   @override
   Stream<List<TaskEntity>> observerListTask() => _streamTasks.stream;
@@ -45,64 +56,87 @@ class TaskRepository implements ITaskRepository {
   Stream<TaskEntity> observerTask() => _streamTask.stream;
 
   @override
+  Stream<T> observerOptimisticTask<T extends OptimisticTask>() =>
+      _streamOptimistic.stream.cast<T>();
+
+  @override
   AsyncResult<List<TaskEntity>> getTasks() async {
-    return _tasksService.getTasks().onSuccess(_streamTasks.add);
+    return _taskApi //
+        .getTasks()
+        .onSuccess(notifyLastTaskList);
   }
+
+  String? _cachedLatestTaskId;
 
   @override
   AsyncResult<TaskEntity> getTask(String taskId) async {
-    _cachedTaskId = taskId;
-    return _tasksService.getTask(taskId).onSuccess(_streamTask.add);
+    _cachedLatestTaskId = taskId;
+
+    return _taskApi //
+        .getTask(taskId)
+        .onSuccess(notifyLatestTaskDisplayed);
   }
-
-  late final StreamController<OptimisticTaskEvent> _streamOptimistic =
-      StreamController.broadcast();
-
-  @override
-  Stream<T> observerOptimisticTask<T extends OptimisticTaskEvent>() =>
-      _streamOptimistic.stream.cast<T>();
 
   @override
   AsyncResult<Unit> addTask(TaskDto dto) async {
     // Optimistic state
-    _streamOptimistic.add(OptimisticAddTaskLoadingEvent(dto));
+    notifyOptimisticState(DoOptimisticAddTask(dto));
 
-    return _tasksService //
+    return _taskApi //
         .addTask(dto)
-        .onSuccess((_) => getTasks()) // Refresh List
-        .onFailure((_) => _streamOptimistic.add(OptimisticAddTaskErrorEvent()));
+        .onSuccess(refreshTaskList)
+        .onFailure((_) => notifyOptimisticState(UndoOptimisticAddTask()));
   }
 
   @override
   AsyncResult<Unit> deleteTask(TaskEntity task) async {
     // Optimistic state
-    _streamOptimistic.add(OptimisticDeleteTaskLoadingEvent(task));
+    notifyOptimisticState(DoOptimisticDeleteTask(task));
 
-    return _tasksService
+    return _taskApi //
         .deleteTask(task.id)
-        .onSuccess((_) => getTasks()) // Refresh List
+        .onSuccess(refreshTaskList)
         .onFailure(
-          (_) => // Optimistic state
-              _streamOptimistic.add(OptimisticDeleteTaskErrorEvent()),
+          (_) => notifyOptimisticState(UndoOptimisticDeleteTask()),
         );
   }
 
   @override
   AsyncResult<Unit> updateTask(TaskDto dto) async {
     // Optimistic state
-    _streamOptimistic.add(OptimisticUpdateTaskLoadingEvent(dto));
+    notifyOptimisticState(DoOptimisticUpdateTask(dto));
 
-    return _tasksService.updateTask(dto).onSuccess((_) {
-      if (_cachedTaskId != null) {
-        getTask(_cachedTaskId!); // Refresh Item
-      }
-      // Refresh List
-      getTasks();
+    return _taskApi.updateTask(dto).onSuccess((_) {
+      // Refresh
+      refreshTaskList();
+      refreshLatestTaskDisplayed(dto.id);
       // Optimistic state
-      _streamOptimistic.add(OptimisticUpdateTaskCompletedEvent());
+      notifyOptimisticState(DoneOptimisticUpdateTask());
     }).onFailure(
-      (_) => // Optimistic state
-          _streamOptimistic.add(OptimisticUpdateTaskErrorEvent()),
+      (_) => notifyOptimisticState(UndoOptimisticUpdateTask()),
     );
+  }
+
+  @override
+  void notifyLastTaskList(List<TaskEntity> taskList) =>
+      _streamTasks.add(taskList);
+
+  @override
+  void notifyLatestTaskDisplayed(TaskEntity task) => _streamTask.add(task);
+
+  @override
+  void notifyOptimisticState(OptimisticTask state) =>
+      _streamOptimistic.add(state);
+
+  @override
+  void refreshTaskList([_]) => getTasks();
+
+  @override
+  void refreshLatestTaskDisplayed(String? taskId) async {
+    if (_cachedLatestTaskId == null || taskId == null) return;
+
+    if (_cachedLatestTaskId == taskId) {
+      getTask(_cachedLatestTaskId!);
+    }
   }
 }

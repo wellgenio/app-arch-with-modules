@@ -67,7 +67,7 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
 
   late final StreamSubscription<CollectionEntity> subscriptionCollection;
 
-  late final StreamSubscription<OptimisticTaskEvent> subscriptionOptimisticTask;
+  late final StreamSubscription<OptimisticTask> subscriptionOptimisticTask;
 
   AsyncResult<List<TaskEntity>> _getCollection(String collectionId) async {
     _cachedCollectionId = collectionId;
@@ -126,8 +126,8 @@ class CollectionDetailsPageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  _refreshCollection(OptimisticTaskEvent event) {
-    if (event is OptimisticUpdateTaskCompletedEvent) {
+  _refreshCollection(OptimisticTask event) {
+    if (event is DoneOptimisticUpdateTask) {
       if (_cachedCollectionId != null) {
         _getCollection(_cachedCollectionId!);
       }

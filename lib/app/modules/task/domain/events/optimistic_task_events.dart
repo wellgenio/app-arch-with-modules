@@ -1,47 +1,47 @@
 import '../dtos/task_dto.dart';
 import '../entities/task_entity.dart';
 
-abstract class OptimisticTaskEvent {}
+abstract class OptimisticTask {}
 
 /// Optimistic Add Task Event
-sealed class OptimisticAddTaskEvent extends OptimisticTaskEvent {}
+sealed class OptimisticAddTask extends OptimisticTask {}
 
-final class OptimisticAddTaskLoadingEvent extends OptimisticAddTaskEvent {
+final class DoOptimisticAddTask extends OptimisticAddTask {
   final TaskDto data;
 
-  OptimisticAddTaskLoadingEvent(this.data);
+  DoOptimisticAddTask(this.data);
 }
 
-final class OptimisticAddTaskErrorEvent extends OptimisticAddTaskEvent {
-  OptimisticAddTaskErrorEvent();
+final class UndoOptimisticAddTask extends OptimisticAddTask {
+  UndoOptimisticAddTask();
 }
 
 /// OOptimistic Delete Task Event
-sealed class OptimisticDeleteTaskEvent extends OptimisticTaskEvent {}
+sealed class OptimisticDeleteTask extends OptimisticTask {}
 
-final class OptimisticDeleteTaskLoadingEvent extends OptimisticDeleteTaskEvent {
+final class DoOptimisticDeleteTask extends OptimisticDeleteTask {
   final TaskEntity data;
 
-  OptimisticDeleteTaskLoadingEvent(this.data);
+  DoOptimisticDeleteTask(this.data);
 }
 
-final class OptimisticDeleteTaskErrorEvent extends OptimisticDeleteTaskEvent {
-  OptimisticDeleteTaskErrorEvent();
+final class UndoOptimisticDeleteTask extends OptimisticDeleteTask {
+  UndoOptimisticDeleteTask();
 }
 
 /// Optimistic Add Task Event
-sealed class OptimisticUpdateTaskEvent extends OptimisticTaskEvent {}
+sealed class OptimisticUpdateTask extends OptimisticTask {}
 
-final class OptimisticUpdateTaskLoadingEvent extends OptimisticDeleteTaskEvent {
+final class DoOptimisticUpdateTask extends OptimisticUpdateTask {
   final TaskDto data;
 
-  OptimisticUpdateTaskLoadingEvent(this.data);
+  DoOptimisticUpdateTask(this.data);
 }
 
-final class OptimisticUpdateTaskCompletedEvent extends OptimisticDeleteTaskEvent {
-  OptimisticUpdateTaskCompletedEvent();
+final class DoneOptimisticUpdateTask extends OptimisticUpdateTask {
+  DoneOptimisticUpdateTask();
 }
 
-final class OptimisticUpdateTaskErrorEvent extends OptimisticDeleteTaskEvent {
-  OptimisticUpdateTaskErrorEvent();
+final class UndoOptimisticUpdateTask extends OptimisticUpdateTask {
+  UndoOptimisticUpdateTask();
 }

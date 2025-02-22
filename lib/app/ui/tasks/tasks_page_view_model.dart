@@ -28,7 +28,7 @@ class TasksPageViewModel extends ChangeNotifier {
         .listen(_updateScreen);
 
     subscriptionOptimistic = taskRepository
-        .observerOptimisticTask<OptimisticAddTaskEvent>()
+        .observerOptimisticTask<OptimisticAddTask>()
         .listen(_optimisticTask);
   }
 
@@ -50,7 +50,7 @@ class TasksPageViewModel extends ChangeNotifier {
 
   late final StreamSubscription<List<TaskEntity>> subscription;
 
-  late final StreamSubscription<OptimisticTaskEvent> subscriptionOptimistic;
+  late final StreamSubscription<OptimisticTask> subscriptionOptimistic;
 
   AsyncResult<List<TaskEntity>> _getTasks() => //
       taskRepository.getTasks().onSuccess(_updateScreen);
@@ -88,10 +88,10 @@ class TasksPageViewModel extends ChangeNotifier {
 
   final optimisticKey = 'optimistic';
 
-  _optimisticTask(OptimisticAddTaskEvent event) {
+  _optimisticTask(OptimisticAddTask event) {
     optimisticAddTaskError = false;
     switch (event) {
-      case OptimisticAddTaskLoadingEvent(:final data):
+      case DoOptimisticAddTask(:final data):
         _tasks.add(
           TaskEntity(
             id: optimisticKey,
@@ -101,7 +101,7 @@ class TasksPageViewModel extends ChangeNotifier {
         );
         break;
 
-      case OptimisticAddTaskErrorEvent():
+      case UndoOptimisticAddTask():
         _tasks = _tasks.where((task) => task.id != optimisticKey).toList();
         optimisticAddTaskError = true;
         break;
